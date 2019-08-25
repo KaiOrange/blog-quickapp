@@ -1,7 +1,8 @@
 <template>
   <div class="demo-page">
     <!-- 应用图标 -->
-    <image id="icon" src="{{icon}}">
+    <image id="icon"
+           src="{{icon}}"></image>
     <!-- 应用名 -->
     <text id="name">{{name}}</text>
     <!-- 应用标签 -->
@@ -21,10 +22,14 @@
     </div>
     <div class="detail">
       <text class="detail-title">Github</text>
-      <text class="detail-content" @click="gotoGithub">{{githubUrl}}</text>
+      <text class="detail-content"
+            @click="gotoGithub">{{githubUrl}}</text>
     </div>
     <!-- 创建快捷方式 -->
-    <input class="btn" type="button" onclick="createShortcut" value="创建快捷方式">
+    <input class="btn"
+           type="button"
+           onclick="createShortcut"
+           value="创建快捷方式"></input>
     <!-- 版权信息 -->
     <text id="footer">{{copyright}}</text>
   </div>

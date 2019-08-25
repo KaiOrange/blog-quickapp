@@ -1,5 +1,6 @@
 <template>
-  <web id="web" src="{{url}}"></web>
+  <web id="web"
+       src="{{url}}"></web>
 </template>
 
 <script>
@@ -20,7 +21,7 @@ export default {
   },
   onBackPress() {
     this.$element('web').canBack({
-      callback: function(e) {
+      callback: function (e) {
         if (e) {
           // 加载历史列表中的上一个 URL
           this.$element('web').back()

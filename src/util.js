@@ -10,6 +10,7 @@ function showMenu() {
     itemList: ['首页', '标签', '分类', '归档', '关于', '取消'],
     success: function(ret) {
       let url = null
+      let baseUrl = 'https://www.kai666666.top'
       switch (ret.index) {
       case 0:
         // 首页
@@ -20,15 +21,15 @@ function showMenu() {
         break
       case 1:
         // 标签
-        url = 'https://www.kai666666.top/tags/'
+        url = '/tags/'
         break
       case 2:
         // 分类
-        url = 'https://www.kai666666.top/categories/'
+        url = '/categories/'
         break
       case 3:
         // 归档
-        url = 'https://www.kai666666.top/archives/'
+        url = '/archives/'
         break
       case 4:
         // 关于
@@ -53,7 +54,7 @@ function showMenu() {
         router.push({
           uri: '/Webview',
           params: {
-            url: url
+            url: baseUrl + url
           }
         })
       }
