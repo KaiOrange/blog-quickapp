@@ -5,7 +5,13 @@
   "versionCode": "1",
   "minPlatformVersion": "1020",
   "icon": "/Common/logo.png",
-  "features": [{ "name": "system.prompt" }, { "name": "system.router" }, { "name": "system.shortcut" }],
+  "features": [
+    { "name": "system.prompt" },
+    { "name": "system.router" },
+    { "name": "system.shortcut" },
+    { "name": "system.vibrator" },
+    { "name": "system.webview" }
+  ],
   "permissions": [{ "origin": "*" }],
   "config": {
     "logLevel": "off"

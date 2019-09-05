@@ -2,7 +2,8 @@
   <div class="demo-page">
     <!-- 应用图标 -->
     <image id="icon"
-           src="{{icon}}"></image>
+           src="{{icon}}"
+           @click="handleImageClick"></image>
     <!-- 应用名 -->
     <text id="name">{{name}}</text>
     <!-- 应用标签 -->
@@ -37,6 +38,7 @@
 
 <script>
 import router from '@system.router'
+import vibrator from '@system.vibrator'
 /**
  * 默认的菜单页(可自定义)
  * name默认为manifest文件中的name字段
@@ -69,6 +71,11 @@ export default {
       params: {
         url: this.githubUrl
       }
+    })
+  },
+  handleImageClick() {
+    vibrator.vibrate({
+      mode: 'short'
     })
   }
 }
