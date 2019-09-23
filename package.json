@@ -15,6 +15,8 @@
     "babel-eslint": "^10.0.1",
     "eslint": "^5.12.1",
     "eslint-plugin-hybrid": "0.0.5",
-    "hap-toolkit": "^0.5.6"
+    "hap-toolkit": "^0.5.6",
+    "less": "^3.10.3",
+    "less-loader": "^5.0.0"
   }
 }

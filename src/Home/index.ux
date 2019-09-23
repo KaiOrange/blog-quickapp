@@ -1,0 +1,184 @@
+<template>
+  <stack style="backgroundColor:{{currentBG.color}}">
+    <image src="{{currentBG.image}}"
+           class="bgImage"></image>
+    <list class="home-list">
+      <list-item type="title"
+                 style="column-span:2;">
+        <div class="title">
+          <text>橙光笔记</text>
+        </div>
+      </list-item>
+      <block for="(index, item) in homeList">
+        <list-item type="home-item"
+                   class="home-item {{ index % 2 === 0 ? 'home-item-left' : 'home-item-right'}}"
+                   onclick="handleHomeItemClick(item.url)">
+          <div class="top-line">
+            <text class="text-name">{{item.text}}</text>
+          </div>
+        </list-item>
+      </block>
+    </list>
+  </stack>
+</template>
+
+<script>
+import router from '@system.router'
+import prompt from '@system.prompt'
+import vibrator from '@system.vibrator'
+import device from '@system.device'
+import network from '@system.network'
+import storage from '@system.storage'
+const appInfo = require('@system.app').getInfo()
+
+const bgList = [{
+  image: '/Common/image/1.jpg',
+  color: '#d1ffff'
+}, {
+  image: '/Common/image/2.jpg',
+  color: '#ffffff'
+}, {
+  image: '/Common/image/3.jpg',
+  color: '#bfdcda'
+}, {
+  image: '/Common/image/4.jpg',
+  color: '#ffffff'
+}]
+
+export default {
+  private: {
+    homeList: [{
+      text: '首页',
+      url: 'https://www.kai666666.top'
+    }, {
+      text: '标签',
+      url: 'https://www.kai666666.top/tags/'
+    }, {
+      text: '分类',
+      url: 'https://www.kai666666.top/categories/'
+    }, {
+      text: '归档',
+      url: 'https://www.kai666666.top/archives/'
+    }, {
+      text: 'GitHub',
+      url: 'https://github.com/KaiOrange'
+    }, {
+      text: '关于',
+      url: '/About?name=' + appInfo.name + '&icon=' + appInfo.icon
+    }],
+    currentBG: bgList[Math.floor(Math.random() * bgList.length)],
+    platformVersionCode: 1020
+  },
+  handleHomeItemClick(url) {
+    if (url.startsWith('http')) {
+      network.getType({
+        success: (data) => {
+          if (!data.type || data.type === 'none') {
+            prompt.showToast({
+              message: '世界上最遥远的距离就是没有网！'
+            })
+          } else {
+            const STORAGE_KEY = 'first-visit-urls'
+            storage.get({
+              key: STORAGE_KEY,
+              success: (data) => {
+                let firstVisitUrls = JSON.parse(data || '{}')
+                if (!firstVisitUrls[url]) {
+                  prompt.showToast({
+                    message: '首次访问，可能会比较慢，请耐心等待...'
+                  })
+                  firstVisitUrls[url] = true
+                  storage.set({
+                    key: STORAGE_KEY,
+                    value: JSON.stringify(firstVisitUrls),
+                    success: function () {
+                      router.push({
+                        uri: '/Webview',
+                        params: {
+                          url: url
+                        }
+                      })
+                    }
+                  })
+                } else {
+                  router.push({
+                    uri: '/Webview',
+                    params: {
+                      url: url
+                    }
+                  })
+                }
+              }
+            })
+          }
+        }
+      })
+
+    } else {
+      router.push({
+        uri: url,
+      })
+    }
+    if (this.platformVersionCode >= 1030) {
+      // 支持短震动的时候就震动一下
+      vibrator.vibrate({
+        mode: 'short'
+      })
+    }
+  },
+  // onCreate() {
+  //   console.log(this)
+  // },
+  onReady() {
+    device.getInfo({
+      success: (ret) => {
+        this.platformVersionCode = ret.platformVersionCode
+        if (this.platformVersionCode >= 1050 && this.$page.setStatusBar) {
+          this.$page.setStatusBar({ backgroundColor: this.currentBG.color })
+        }
+      }
+    })
+  },
+}
+</script>
+
+<style lang="less" scoped>
+@space: 24px;
+.bgImage {
+  width: 100%;
+}
+
+.home-list {
+  columns: 2;
+  padding: @space 32px 0;
+
+  .title {
+    margin: 80px 0 120px;
+    text {
+      font-size: 50px;
+      color: #333333;
+    }
+  }
+  .home-item {
+    height: 205px;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    margin-bottom: @space;
+    border-radius: 8px;
+    &:active {
+      background-color: rgba(0, 0, 0, 0.6);
+    }
+    text {
+      color: #f0f8ff;
+      font-size: 40px;
+    }
+  }
+  .home-item-left {
+    margin-right: @space / 2;
+  }
+  .home-item-right {
+    margin-left: @space / 2;
+  }
+}
+</style>
