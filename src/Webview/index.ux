@@ -5,13 +5,9 @@
 </template>
 
 <script>
-import router from '@system.router'
-import prompt from '@system.prompt'
 
 export default {
   private: {
-    backTime: null,
-    maxBackTime: 1800
   },
   // 页面级组件的数据模型，影响传入数据的覆盖机制：private内定义的属性不允许被覆盖
   protected: {
@@ -23,30 +19,6 @@ export default {
   },
   onMenuPress() {
     this.$app.$def.showMenu()
-  },
-  onBackPress() {
-    this.$element('web').canBack({
-      callback: function (e) {
-        if (e) {
-          // 加载历史列表中的上一个 URL
-          this.$element('web').back()
-        } else {
-          if (router.getLength() === 1) {
-            let currentTime = +new Date()
-            if (!this.backTime || currentTime - this.backTime > this.maxBackTime) {
-              this.backTime = currentTime
-              prompt.showToast({
-                message: '再按一次退出程序'
-              })
-              return
-            }
-          }
-          router.back()
-        }
-      }.bind(this)
-    })
-    // 阻止默认行为，等待异步操作
-    return true
   }
 }
 </script>

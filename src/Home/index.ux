@@ -6,7 +6,7 @@
       <list-item type="title"
                  style="column-span:2;">
         <div class="title">
-          <text>橙光笔记</text>
+          <text @click="handleClickTitle">橙光笔记</text>
         </div>
       </list-item>
       <block for="(index, item) in homeList">
@@ -67,7 +67,17 @@ export default {
       url: '/About?name=' + appInfo.name + '&icon=' + appInfo.icon
     }],
     currentBG: bgList[Math.floor(Math.random() * bgList.length)],
-    platformVersionCode: 1020
+    platformVersionCode: 1020,
+    backTime: null,
+    maxBackTime: 1800
+  },
+  handleClickTitle() {
+    // if (this.platformVersionCode >= 1030) {
+    // 支持短震动的时候就震动一下
+    vibrator.vibrate({
+      mode: 'short'
+    })
+    // }
   },
   handleHomeItemClick(url) {
     if (url.startsWith('http')) {
@@ -119,12 +129,6 @@ export default {
         uri: url,
       })
     }
-    if (this.platformVersionCode >= 1030) {
-      // 支持短震动的时候就震动一下
-      vibrator.vibrate({
-        mode: 'short'
-      })
-    }
   },
   // onCreate() {
   //   console.log(this)
@@ -139,6 +143,20 @@ export default {
       }
     })
   },
+  onBackPress() {
+    if (router.getLength() === 1) {
+      let currentTime = +new Date()
+      if (!this.backTime || currentTime - this.backTime > this.maxBackTime) {
+        this.backTime = currentTime
+        prompt.showToast({
+          message: '再按一次退出程序'
+        })
+        return true
+      }
+    }
+    router.back()
+    return true
+  }
 }
 </script>
 
