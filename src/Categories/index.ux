@@ -1,0 +1,104 @@
+<import name="Page" src="../Common/components/Page.ux"></import>
+ 
+<template>
+  <Page is-show-loading="{{categories.length === 0 && !isShowNetwork}}"
+        is-show-network="{{isShowNetwork}}">
+    <list class="categories"
+          if="{{categories.length > 0}}">
+      <list-item type="total">
+        <div class="total"><text>目前共计{{categories.length}}个分类</text></div>
+      </list-item>
+      <block for="categorie in categories">
+        <list-item type="categorie"
+                   @click="handleClick(categorie.name)">
+          <div class="categorie">
+            <text class="emoji">{{categorie.emoji}}</text>
+            <text class="name">{{categorie.name}}</text>
+            <text class="number">({{categorie.number}})</text>
+          </div>
+        </list-item>
+      </block>
+    </list>
+  </Page>
+</template>
+
+<script>
+import router from '@system.router'
+import fetch from '@system.fetch'
+import prompt from '@system.prompt'
+import Constant from '../Common/Constant'
+import util from '../util'
+
+export default {
+  private: {
+    categories: [],
+    isShowNetwork: false
+  },
+  onInit() {
+    fetch.fetch({
+      url: Constant.HOST + '/content.json',
+      responseType: 'json'
+    }).then((res) => ((res.data && res.data.data) || {})).then((res) => {
+      let categories = []
+      let posts = res.posts || []
+      posts.map(post => {
+        let preCategories = post.categories || []
+        preCategories.map((tag) => {
+          let index = categories.findIndex((t => {
+            return t.name === tag.name
+          }))
+          if (index === -1) {
+            categories.push({ name: tag.name, number: 1, emoji: util.getRandomEmoji() })
+          } else {
+            ++categories[index].number
+          }
+
+        })
+      })
+      this.categories = categories
+    }).catch(() => {
+      this.isShowNetwork = true
+    })
+  },
+
+  handleClick(name) {
+    router.push({
+      uri: '/Webview',
+      params: {
+        url: Constant.HOST + '/categories/' + name
+      }
+    })
+  }
+}
+</script>
+
+<style lang="less" scoped>
+.categories {
+  background-color: #ffffff;
+  padding: 0 44px;
+  flex-direction: column;
+  .total {
+    width: 100%;
+    justify-content: center;
+    margin: 60px 60px;
+  }
+  .categorie {
+    width: 100%;
+    margin: 10px 10px;
+    .emoji {
+      font-size: 32px;
+      color: #000000;
+    }
+    .name {
+      font-size: 32px;
+      color: #666666;
+      text-decoration: underline;
+      margin: 0 10px;
+    }
+    .number {
+      color: #bbbbbb;
+      font-size: 32px;
+    }
+  }
+}
+</style>

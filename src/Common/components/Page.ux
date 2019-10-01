@@ -1,0 +1,46 @@
+<import name="Loading" src="./Loading.ux"></import>
+
+<template>
+  <stack>
+    <slot></slot>
+    <div class="center-box"
+         if="{{isShowLoading}}">
+      <Loading></Loading>
+    </div>
+    <div class="center-box"
+         if="{{isShowNetwork}}">
+      <image src="/Common/image/network.png"
+             class="network"></image>
+      <text>世界上最遥远的距离就是没有网。</text>
+    </div>
+  </stack>
+</template>
+
+<script>
+export default {
+  props: {
+    isShowLoading: {
+      type: Boolean,
+      default: false
+    },
+    isShowNetwork: {
+      type: Boolean,
+      default: false
+    },
+  }
+}
+</script>
+
+<style lang="less" scoped>
+.center-box {
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  .network {
+    width: 276px;
+    margin-bottom: 20px;
+  }
+}
+</style>

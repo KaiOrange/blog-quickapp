@@ -1,8 +1,8 @@
 {
   "package": "top.kai666666.blog",
   "name": "橙光笔记",
-  "versionName": "1.0.3",
-  "versionCode": "5",
+  "versionName": "1.0.4",
+  "versionCode": "6",
   "minPlatformVersion": "1020",
   "icon": "/Common/logo.png",
   "features": [
@@ -12,8 +12,7 @@
     { "name": "system.vibrator" },
     { "name": "system.webview" },
     { "name": "system.device" },
-    { "name": "system.network" },
-    { "name": "system.storage" }
+    { "name": "system.fetch" }
   ],
   "permissions": [{ "origin": "*" }],
   "config": {
@@ -25,7 +24,22 @@
       "Home": {
         "component": "index"
       },
+      "Post": {
+        "component": "index"
+      },
+      "Tags": {
+        "component": "index"
+      },
+      "Categories": {
+        "component": "index"
+      },
+      "Poem": {
+        "component": "index"
+      },
       "Webview": {
+        "component": "index"
+      },
+      "Breathe": {
         "component": "index"
       },
       "About": {
@@ -42,9 +56,29 @@
       "Home": {
         "titleBarText": "橙光笔记"
       },
+      "Post": {
+        "titleBarText": "归档",
+        "titleBar": true,
+        "titleBarBackgroundColor": "#f5f5f5"
+      },
+      "Tags": {
+        "titleBarText": "标签",
+        "titleBar": true
+      },
+      "Categories": {
+        "titleBarText": "分类",
+        "titleBar": true
+      },
+      "Poem": {
+        "titleBarText": "诗词",
+        "titleBar": true
+      },
       "Webview": {
         "titleBar": true,
         "titleBarText": "加载中..."
+      },
+      "Breathe": {
+        "statusBarBackgroundColor": "#282c34"
       },
       "About": {
         "titleBar": true,

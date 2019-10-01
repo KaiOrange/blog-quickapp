@@ -27,8 +27,6 @@ import router from '@system.router'
 import prompt from '@system.prompt'
 import vibrator from '@system.vibrator'
 import device from '@system.device'
-import network from '@system.network'
-import storage from '@system.storage'
 const appInfo = require('@system.app').getInfo()
 
 const bgList = [{
@@ -48,20 +46,20 @@ const bgList = [{
 export default {
   private: {
     homeList: [{
-      text: '首页',
-      url: 'https://www.kai666666.top'
+      text: '归档',
+      url: '/Post'
     }, {
       text: '标签',
-      url: 'https://www.kai666666.top/tags/'
+      url: '/Tags'
     }, {
       text: '分类',
-      url: 'https://www.kai666666.top/categories/'
+      url: '/Categories'
     }, {
-      text: '归档',
-      url: 'https://www.kai666666.top/archives/'
+      text: '诗词',
+      url: '/Poem'
     }, {
-      text: 'GitHub',
-      url: 'https://github.com/KaiOrange'
+      text: '呼吸',
+      url: '/Breathe'
     }, {
       text: '关于',
       url: '/About?name=' + appInfo.name + '&icon=' + appInfo.icon
@@ -81,49 +79,12 @@ export default {
   },
   handleHomeItemClick(url) {
     if (url.startsWith('http')) {
-      network.getType({
-        success: (data) => {
-          if (!data.type || data.type === 'none') {
-            prompt.showToast({
-              message: '世界上最遥远的距离就是没有网！'
-            })
-          } else {
-            const STORAGE_KEY = 'first-visit-urls'
-            storage.get({
-              key: STORAGE_KEY,
-              success: (data) => {
-                let firstVisitUrls = JSON.parse(data || '{}')
-                if (!firstVisitUrls[url]) {
-                  prompt.showToast({
-                    message: '首次访问，可能会比较慢，请耐心等待...'
-                  })
-                  firstVisitUrls[url] = true
-                  storage.set({
-                    key: STORAGE_KEY,
-                    value: JSON.stringify(firstVisitUrls),
-                    success: function () {
-                      router.push({
-                        uri: '/Webview',
-                        params: {
-                          url: url
-                        }
-                      })
-                    }
-                  })
-                } else {
-                  router.push({
-                    uri: '/Webview',
-                    params: {
-                      url: url
-                    }
-                  })
-                }
-              }
-            })
-          }
+      router.push({
+        uri: '/Webview',
+        params: {
+          url: url
         }
       })
-
     } else {
       router.push({
         uri: url,

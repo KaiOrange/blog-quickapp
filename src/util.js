@@ -5,12 +5,13 @@ function showMenu() {
   const prompt = require('@system.prompt')
   const router = require('@system.router')
   const appInfo = require('@system.app').getInfo()
+  const Constant = require('./Common/Constant')
 
   prompt.showContextMenu({
     itemList: ['首页', '标签', '分类', '归档', '关于', '取消'],
     success: function(ret) {
       let url = null
-      let baseUrl = 'https://www.kai666666.top'
+      let baseUrl = Constant.HOST
       switch (ret.index) {
       case 0:
         // 首页
@@ -93,7 +94,63 @@ function createShortcut() {
   })
 }
 
+function getRandomEmoji() {
+  let emoji = [
+    '😁',
+    '🤣',
+    '😂',
+    '😄',
+    '😅',
+    '🐱',
+    '🐭',
+    '🐹',
+    '🐰',
+    '🐸',
+    '🍏',
+    '🍎',
+    '🍐',
+    '🍊',
+    '🍌',
+    '🍉',
+    '🍇',
+    '🍓',
+    '🍒',
+    '🍍',
+    '🥝',
+    '🥑',
+    '🍅',
+    '🍆',
+    '🥒',
+    '🥕',
+    '🌶',
+    '🥔',
+    '🥐',
+    '🍞',
+    '🥖',
+    '🧀',
+    '🍖',
+    '🍤',
+    '🍔',
+    '🍟',
+    '🍕',
+    '🍝',
+    '🔯',
+    '💕',
+    '💗',
+    '💘',
+    '💘',
+    '🧡',
+    '🗯',
+    '⚪',
+    '️⚫️',
+    '🔴',
+    '🔵'
+  ]
+  return emoji[Math.floor(Math.random() * emoji.length)]
+}
+
 export default {
   showMenu,
-  createShortcut
+  createShortcut,
+  getRandomEmoji
 }

@@ -1,0 +1,168 @@
+<template>
+  <stack class="breathe"
+         @click="handleStart">
+    <text class="countdowm"
+          if="{{preCountDown > 0 }}">{{preCountDownText[preCountDown]}}</text>
+    <text class="countdowm"
+          if="{{countDown > 0 }}">{{countDown}}</text>
+    <stack class="center">
+      <div class="circle {{countDown > 0?'wave-animate':''}}"></div>
+      <div class="circle {{countDown > 0?'wave-animate':''}}"
+           style="animationDelay:600ms;opacity:0;"></div>
+      <div class="circle {{countDown > 0?'wave-animate':''}}"
+           style="animationDelay:1200ms;opacity:0"></div>
+      <text class="start"
+            if="{{preCountDown === 0 && countDown === 0 && isFirst}}">点击任意地方开始呼吸</text>
+      <div elif="{{preCountDown === 0 && countDown === 0}}"
+           class="success">
+        <image src="/Common/image/trophy.png"></image>
+        <div><text class="start">你很棒，完成了一次呼吸</text></div>
+        <div><text class="start">点击任意地方再次开始呼吸</text></div>
+      </div>
+
+    </stack>
+  </stack>
+</template>
+
+<script>
+import device from '@system.device'
+import vibrator from '@system.vibrator'
+
+export default {
+  private: {
+    vibrateSpace: 10,
+    countDown: 0,
+    timer: null,
+    isFirst: true,
+    maxCount: 60,
+    preCountDown: 0,
+    preCountDownText: ['', '开始', '预备'],
+
+  },
+  onReady() {
+    device.getInfo({
+      success: (ret) => {
+        if (ret.platformVersionCode >= 1030) {
+          this.vibrateSpace = 5
+        }
+      }
+    })
+  },
+  onDestroy() {
+    this.clearTimer()
+  },
+  handleStart() {
+    if (this.countDown > 0) {
+      return
+    }
+    this.isFirst = false
+    this.preCountDown = 2
+    this.timer = setInterval(() => {
+      if (this.preCountDown > 0) {
+        --this.preCountDown
+        if (this.preCountDown === 0) {
+          this.countDown = this.maxCount
+        }
+        return
+      }
+
+      --this.countDown
+      if (this.countDown <= 0) {
+        vibrator.vibrate({
+          mode: 'long'
+        })
+        this.clearTimer()
+      } else if (this.countDown % this.vibrateSpace === 0) {
+        vibrator.vibrate({
+          mode: 'short'
+        })
+      }
+    }, 1000)
+  },
+  clearTimer() {
+    if (this.timer) {
+      clearInterval(this.timer)
+    }
+  }
+}
+</script>
+
+<style lang="less" scoped>
+@circle-width : 300px;
+.breathe {
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  background-color: #282c34;
+  .countdowm {
+    align-self: flex-start;
+    margin-top: 100px;
+    font-size: 86px;
+    color: #dee8f0;
+  }
+  .center {
+    width: 700px;
+    height: 700px;
+    border-radius: 50%;
+    justify-content: center;
+    align-items: center;
+
+    .circle {
+      border: 5px solid #deb887;
+      border-radius: @circle-width / 2;
+      width: @circle-width;
+      height: @circle-width;
+      opacity: 0;
+    }
+    .wave-animate {
+      animation-name: waveAnimate;
+      animation-duration: 10000ms;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+    }
+
+    .start {
+      font-size: 40px;
+      font-weight: bold;
+      color: #dee8f0;
+    }
+    .success {
+      flex-direction: column;
+      align-items: center;
+      image {
+        width: 200px;
+        height: 200px;
+        margin-bottom: 50px;
+      }
+    }
+  }
+}
+@keyframes waveAnimate {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  8% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  40% {
+    transform: scale(2);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(2);
+    /* animation-timing-function: ease-in; */
+    opacity: 0;
+  }
+  92% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0);
+    opacity: 1;
+  }
+}
+</style>

@@ -1,0 +1,91 @@
+<import name="Page" src="../Common/components/Page.ux"></import>
+ 
+<template>
+  <Page is-show-loading="{{posts.length === 0 && !isShowNetwork}}"
+        is-show-network="{{isShowNetwork}}">
+    <list class="posts">
+      <list-item type="empty-space">
+        <div class="empty-space"></div>
+      </list-item>
+      <block for="post in posts">
+        <list-item type="post"
+                   @click="handleClick(post.permalink)">
+          <div class="post">
+            <div><text class="title">{{post.title}}</text></div>
+            <div><text class="date">{{post.date}}</text><text class="categories">{{getCategoriesString(post)}}</text></div>
+          </div>
+        </list-item>
+      </block>
+    </list>
+  </Page>
+</template>
+
+<script>
+import router from '@system.router'
+import fetch from '@system.fetch'
+import prompt from '@system.prompt'
+import Constant from '../Common/Constant'
+
+export default {
+  private: {
+    posts: [],
+    isShowNetwork: false
+  },
+  onInit() {
+    fetch.fetch({
+      url: Constant.HOST + '/content.json',
+      responseType: 'json'
+    }).then((res) => ((res.data && res.data.data) || {})).then((res) => {
+      this.posts = res.posts || []
+    }).catch(() => {
+      this.isShowNetwork = true
+    })
+  },
+
+  handleClick(url) {
+    router.push({
+      uri: '/Webview',
+      params: {
+        url: url
+      }
+    })
+  },
+  getCategoriesString(post) {
+    return (post.categories || []).map(item => item.name).join(' ')
+  }
+}
+</script>
+
+<style lang="less" scoped>
+.posts {
+  border-top: 2px dotted #dddddd;
+  background-color: #f5f5f5;
+  padding: 0 44px;
+  flex-direction: column;
+  .empty-space {
+    height: 24px;
+  }
+  .post {
+    width: 100%;
+    flex-direction: column;
+    background-color: #ffffff;
+    margin-bottom: 24px;
+    padding: 16px 20px;
+    border-radius: 8px;
+
+    .title {
+      color: #3181f7;
+      font-size: 36px;
+    }
+    .date {
+      color: #aaaaaa;
+      font-size: 26px;
+      flex-grow: 1;
+    }
+    .categories {
+      color: #888888;
+      font-size: 28px;
+    }
+  }
+}
+</style>

@@ -1,0 +1,123 @@
+  <import name="Page" src="../Common/components/Page.ux"></import>
+  
+  <template>
+  <Page is-show-loading="{{!isShowPoem && !isShowNetwork}}"
+        is-show-network="{{isShowNetwork}}">
+
+    <div class="poem-container"
+         if="{{isShowPoem}}">
+      <stack class="poem-stack">
+        <image class="poem-img"
+               src="{{imgUrl}}"></image>
+        <div class="poem-box">
+          <div class="poem"><text>{{poem.content}}</text></div>
+          <text class="author">{{poem.author}}</text>
+          <text class="origin">《{{poem.origin}}》</text>
+        </div>
+      </stack>
+      <div class="change">
+        <text @click="handleClick">换一首</text>
+      </div>
+    </div>
+  </Page>
+</template>
+
+  <script>
+import fetch from '@system.fetch'
+
+export default {
+  private: {
+    poem: {},
+    isShowPoem: false,
+    isShowNetwork: false,
+    imgUrl: null
+  },
+  onInit() {
+    this.handleClick()
+    let imgUrls = ['mei', 'lan', 'zhu', 'ju'];
+    this.imgUrl = '/Common/image/' + imgUrls[Math.floor(Math.random() * imgUrls.length)] + '.png'
+  },
+  handleClick() {
+    fetch.fetch({
+      url: 'https://api.gushi.ci/all.json',
+      responseType: 'json'
+    }).then((res) => ((res.data && res.data.data) || {})).then((res) => {
+      this.poem = res || {}
+      if (this.poem.content) {
+        this.poem.content = this.poem.content.replace(/，|。|、|？|!/g, function (sym) {
+          return sym + '\n'
+        }).replace(/。$/g, '')
+      }
+      this.isShowPoem = true
+    }).catch(() => {
+      this.isShowNetwork = true
+    })
+  },
+
+}
+</script>
+
+  <style lang="less" scoped>
+.img-container {
+  flex-direction: column-reverse;
+}
+
+.poem-container {
+  width: 100%;
+  height: 100%;
+  background-color: #eeeeee;
+  padding: 80px 100px;
+  flex-direction: column;
+
+  .change {
+    justify-content: center;
+    width: 100%;
+    margin-top: 60px;
+    text {
+      font-size: 50px;
+      color: #333333;
+    }
+  }
+  .poem-stack {
+    border-radius: 10px;
+    width: 100%;
+    background-color: #ffffff;
+    .poem-img {
+      height: 300px;
+      margin-top: 350px;
+    }
+    .poem-box {
+      /* flex-direction: row-reverse; */
+      flex-direction: column;
+
+      padding: 60px 30px 40px;
+      width: 100%;
+
+      .poem {
+        width: 100%;
+        align-items: flex-start;
+        justify-content: flex-start;
+        height: 620px;
+
+        text {
+          color: #333333;
+          font-size: 40px;
+          text-align: left;
+        }
+      }
+
+      .author {
+        color: #333333;
+        font-size: 28px;
+        text-align: right;
+        margin-right: 20px;
+      }
+      .origin {
+        color: #333333;
+        font-size: 28px;
+        text-align: right;
+      }
+    }
+  }
+}
+</style>

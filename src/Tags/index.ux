@@ -1,0 +1,98 @@
+<import name="Page" src="../Common/components/Page.ux"></import>
+ 
+<template>
+  <Page is-show-loading="{{tags.length === 0 && !isShowNetwork}}"
+        is-show-network="{{isShowNetwork}}">
+    <div class="tags-box"
+         if="{{tags.length>0}}">
+      <div class="total"><text>目前共计{{tags.length}}个标签</text></div>
+      <div class="tags">
+        <text class="tag"
+              for="tag in tags"
+              style="fontSize:{{getFontSize(tag.number) + 'px'}};opacity:{{getOpacity(tag.number) + 'px'}}"
+              @click="handleClick(tag.name)">{{tag.name}}</text>
+      </div>
+    </div>
+  </Page>
+</template>
+
+<script>
+import router from '@system.router'
+import fetch from '@system.fetch'
+import prompt from '@system.prompt'
+import Constant from '../Common/Constant'
+
+export default {
+  private: {
+    tags: [],
+    isShowNetwork: false
+  },
+  onInit() {
+    fetch.fetch({
+      url: Constant.HOST + '/content.json',
+      responseType: 'json'
+    }).then((res) => ((res.data && res.data.data) || {})).then((res) => {
+      let tags = []
+      let posts = res.posts || []
+      posts.map(post => {
+        let preTags = post.tags || []
+        preTags.map((tag) => {
+          let index = tags.findIndex((t => {
+            return t.name === tag.name
+          }))
+          if (index === -1) {
+            tags.push({ name: tag.name, number: 1 })
+          } else {
+            ++tags[index].number
+          }
+
+        })
+      })
+      this.tags = tags
+    }).catch(() => {
+      this.isShowNetwork = true
+    })
+  },
+  handleClick(tag) {
+    router.push({
+      uri: '/Webview',
+      params: {
+        url: Constant.HOST + '/tags/' + tag
+      }
+    })
+  },
+  getFontSize(number) {
+    return 24 + number * 3
+  },
+  getOpacity(number) {
+    let opacity = 0.1 + number * 0.2
+    return opacity > 1 ? 1 : opacity
+  },
+}
+</script>
+
+<style lang="less" scoped>
+.tags-box {
+  width: 100%;
+  height: 100%;
+  background-color: #ffffff;
+  padding: 0 44px;
+  flex-direction: column;
+
+  .total {
+    justify-content: center;
+    margin: 60px 60px;
+  }
+
+  .tags {
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    .tag {
+      color: #111111;
+      padding: 10px 18px;
+      text-decoration: underline;
+    }
+  }
+}
+</style>
