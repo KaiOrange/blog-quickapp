@@ -1,14 +1,10 @@
   <import name="Page" src="../Common/components/Page.ux"></import>
   
   <template>
-  <Page is-show-loading="{{!isShowPoem && !isShowNetwork}}"
-        is-show-network="{{isShowNetwork}}">
-
-    <div class="poem-container"
-         if="{{isShowPoem}}">
+  <Page is-show-loading="{{!isShowPoem && !isShowNetwork}}" is-show-network="{{isShowNetwork}}">
+    <div class="poem-container" if="{{isShowPoem}}">
       <stack class="poem-stack">
-        <image class="poem-img"
-               src="{{imgUrl}}"></image>
+        <image class="poem-img" src="{{imgUrl}}"></image>
         <div class="poem-box">
           <div class="poem"><text>{{poem.content}}</text></div>
           <text class="author">{{poem.author}}</text>
@@ -24,13 +20,16 @@
 
   <script>
 import fetch from '@system.fetch'
+import storage from '@system.storage'
+import Constant from '../Common/Constant'
 
 export default {
   private: {
     poem: {},
     isShowPoem: false,
     isShowNetwork: false,
-    imgUrl: null
+    imgUrl: null,
+    TOKEN: null
   },
   onInit() {
     this.handleClick()
@@ -38,22 +37,55 @@ export default {
     this.imgUrl = '/Common/image/' + imgUrls[Math.floor(Math.random() * imgUrls.length)] + '.png'
   },
   handleClick() {
+    if (!this.TOKEN) {
+      storage.get({
+        key: Constant.POEM_USER_TOKEN,
+        success: (data) => {
+          if (data) {
+            this.TOKEN = data
+            this.fetchData()
+          } else {
+            fetch.fetch({
+              url: 'https://v2.jinrishici.com/token',
+              responseType: 'json'
+            }).then((res) => ((res.data && res.data.data) || {})).then((res) => {
+              let token = res.data || ''
+              this.TOKEN = token
+              storage.set({
+                key: Constant.POEM_USER_TOKEN,
+                value: token,
+                success: () => {
+                  this.fetchData()
+                }
+              })
+            })
+          }
+        }
+      })
+    } else {
+      this.fetchData()
+    }
+  },
+  fetchData() {
     fetch.fetch({
-      url: 'https://api.gushi.ci/all.json',
-      responseType: 'json'
+      url: 'https://v2.jinrishici.com/sentence',
+      responseType: 'json',
+      header: { 'X-User-Token': this.TOKEN }
     }).then((res) => ((res.data && res.data.data) || {})).then((res) => {
-      this.poem = res || {}
-      if (this.poem.content) {
-        this.poem.content = this.poem.content.replace(/，|。|、|？|!/g, function (sym) {
+      let poem = {}
+      if (res.data && res.data.content) {
+        poem.content = res.data.content.replace(/，|。|、|？|!/g, function (sym) {
           return sym + '\n'
         }).replace(/。$/g, '')
       }
+      poem.author = res.data.origin.author
+      poem.origin = res.data.origin.title
+      this.poem = poem
       this.isShowPoem = true
     }).catch(() => {
       this.isShowNetwork = true
     })
-  },
-
+  }
 }
 </script>
 

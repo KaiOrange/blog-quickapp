@@ -83,9 +83,10 @@ function createShortcut() {
               message: '成功创建桌面图标'
             })
           },
-          fail: function(errmsg, errcode) {
+          fail: function(/*errmsg, errcode*/) {
             prompt.showToast({
-              message: `${errcode}: ${errmsg}`
+              // message: `${errcode}: ${errmsg}`
+              message: '创建桌面图标失败'
             })
           }
         })

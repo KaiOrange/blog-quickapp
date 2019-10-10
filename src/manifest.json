@@ -1,8 +1,8 @@
 {
   "package": "top.kai666666.blog",
   "name": "橙光笔记",
-  "versionName": "1.0.4",
-  "versionCode": "6",
+  "versionName": "1.0.6",
+  "versionCode": "8",
   "minPlatformVersion": "1020",
   "icon": "/Common/logo.png",
   "features": [
@@ -12,7 +12,8 @@
     { "name": "system.vibrator" },
     { "name": "system.webview" },
     { "name": "system.device" },
-    { "name": "system.fetch" }
+    { "name": "system.fetch" },
+    { "name": "system.storage" }
   ],
   "permissions": [{ "origin": "*" }],
   "config": {
