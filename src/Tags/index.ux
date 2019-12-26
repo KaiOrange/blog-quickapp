@@ -1,16 +1,11 @@
 <import name="Page" src="../Common/components/Page.ux"></import>
  
 <template>
-  <Page is-show-loading="{{tags.length === 0 && !isShowNetwork}}"
-        is-show-network="{{isShowNetwork}}">
-    <div class="tags-box"
-         if="{{tags.length>0}}">
+  <Page is-show-loading="{{tags.length === 0 && !isShowNetwork}}" is-show-network="{{isShowNetwork}}">
+    <div class="tags-box" if="{{tags.length>0}}">
       <div class="total"><text>目前共计{{tags.length}}个标签</text></div>
       <div class="tags">
-        <text class="tag"
-              for="tag in tags"
-              style="fontSize:{{getFontSize(tag.number) + 'px'}};opacity:{{getOpacity(tag.number) + 'px'}}"
-              @click="handleClick(tag.name)">{{tag.name}}</text>
+        <text class="tag" for="tag in tags" style="fontSize:{{getFontSize(tag.number) + 'px'}};opacity:{{getOpacity(tag.number) + 'px'}}" @click="handleClick(tag.name)">{{tag.name}}</text>
       </div>
     </div>
   </Page>
@@ -54,10 +49,11 @@ export default {
     })
   },
   handleClick(tag) {
+    console.log(Constant.HOST + '/tags/' + tag.replace(/\./g, '-'))
     router.push({
       uri: '/Webview',
       params: {
-        url: Constant.HOST + '/tags/' + tag
+        url: Constant.HOST + '/tags/' + tag.replace(/\./g, '-') + '/'
       }
     })
   },

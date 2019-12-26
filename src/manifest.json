@@ -1,8 +1,8 @@
 {
   "package": "top.kai666666.blog",
   "name": "橙光笔记",
-  "versionName": "1.0.8",
-  "versionCode": "10",
+  "versionName": "1.0.10",
+  "versionCode": "12",
   "minPlatformVersion": "1020",
   "icon": "/Common/logo.png",
   "features": [

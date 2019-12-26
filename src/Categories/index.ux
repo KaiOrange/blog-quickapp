@@ -1,16 +1,13 @@
 <import name="Page" src="../Common/components/Page.ux"></import>
  
 <template>
-  <Page is-show-loading="{{categories.length === 0 && !isShowNetwork}}"
-        is-show-network="{{isShowNetwork}}">
-    <list class="categories"
-          if="{{categories.length > 0}}">
+  <Page is-show-loading="{{categories.length === 0 && !isShowNetwork}}" is-show-network="{{isShowNetwork}}">
+    <list class="categories" if="{{categories.length > 0}}">
       <list-item type="total">
         <div class="total"><text>目前共计{{categories.length}}个分类</text></div>
       </list-item>
       <block for="categorie in categories">
-        <list-item type="categorie"
-                   @click="handleClick(categorie.name)">
+        <list-item type="categorie" @click="handleClick(categorie.name)">
           <div class="categorie">
             <text class="emoji">{{categorie.emoji}}</text>
             <text class="name">{{categorie.name}}</text>
@@ -62,10 +59,11 @@ export default {
   },
 
   handleClick(name) {
+    console.log(Constant.HOST + '/categories/' + name.replace(/\./g, '-'))
     router.push({
       uri: '/Webview',
       params: {
-        url: Constant.HOST + '/categories/' + name
+        url: Constant.HOST + '/categories/' + name.replace(/\./g, '-') + '/'
       }
     })
   }
