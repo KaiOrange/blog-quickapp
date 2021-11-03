@@ -1,4 +1,4 @@
 export default {
-  HOST:'https://www.kai666666.top',
-  POEM_USER_TOKEN:'POEM_USER_TOKEN',
+  HOST: 'https://kai666666.com',
+  POEM_USER_TOKEN: 'POEM_USER_TOKEN',
 }

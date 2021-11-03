@@ -1,18 +1,23 @@
   <import name="Page" src="../Common/components/Page.ux"></import>
   
   <template>
-  <Page is-show-loading="{{!isShowPoem && !isShowNetwork}}" is-show-network="{{isShowNetwork}}">
+  <Page
+    is-show-loading="{{!isShowPoem && !isShowNetwork}}"
+    is-show-network="{{isShowNetwork}}"
+  >
     <div class="poem-container" if="{{isShowPoem}}">
       <stack class="poem-stack">
         <image class="poem-img" src="{{imgUrl}}"></image>
         <div class="poem-box">
-          <div class="poem"><text>{{poem.content}}</text></div>
-          <text class="author">{{poem.author}}</text>
-          <text class="origin">《{{poem.origin}}》</text>
+          <div class="poem">
+            <text>{{ poem.content }}</text>
+          </div>
+          <text class="author">{{ poem.author }}</text>
+          <text class="origin">《{{ poem.origin }}》</text>
         </div>
       </stack>
       <div class="change">
-        <text @click="handleClick">换一首</text>
+        <text @click="fetchData">换一首</text>
       </div>
     </div>
   </Page>
@@ -22,6 +27,7 @@
 import fetch from '@system.fetch'
 import storage from '@system.storage'
 import Constant from '../Common/Constant'
+const jinrishici = require('jinrishici');
 
 export default {
   private: {
@@ -29,49 +35,14 @@ export default {
     isShowPoem: false,
     isShowNetwork: false,
     imgUrl: null,
-    TOKEN: null
   },
   onInit() {
-    this.handleClick()
+    this.fetchData()
     let imgUrls = ['mei', 'lan', 'zhu', 'ju'];
     this.imgUrl = '/Common/image/' + imgUrls[Math.floor(Math.random() * imgUrls.length)] + '.png'
   },
-  handleClick() {
-    if (!this.TOKEN) {
-      storage.get({
-        key: Constant.POEM_USER_TOKEN,
-        success: (data) => {
-          if (data) {
-            this.TOKEN = data
-            this.fetchData()
-          } else {
-            fetch.fetch({
-              url: 'https://v2.jinrishici.com/token',
-              responseType: 'json'
-            }).then((res) => ((res.data && res.data.data) || {})).then((res) => {
-              let token = res.data || ''
-              this.TOKEN = token
-              storage.set({
-                key: Constant.POEM_USER_TOKEN,
-                value: token,
-                success: () => {
-                  this.fetchData()
-                }
-              })
-            })
-          }
-        }
-      })
-    } else {
-      this.fetchData()
-    }
-  },
   fetchData() {
-    fetch.fetch({
-      url: 'https://v2.jinrishici.com/sentence',
-      responseType: 'json',
-      header: { 'X-User-Token': this.TOKEN }
-    }).then((res) => ((res.data && res.data.data) || {})).then((res) => {
+    jinrishici.load(res => {
       let poem = {}
       if (res.data && res.data.content) {
         poem.content = res.data.content.replace(/，|。|、|？|!/g, function (sym) {
@@ -82,9 +53,10 @@ export default {
       poem.origin = res.data.origin.title
       this.poem = poem
       this.isShowPoem = true
-    }).catch(() => {
+      this.isShowNetwork = false
+    }, errData => {
       this.isShowNetwork = true
-    })
+    });
   }
 }
 </script>

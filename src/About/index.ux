@@ -1,11 +1,9 @@
 <template>
   <div class="demo-page">
     <!-- 应用图标 -->
-    <image id="icon"
-           src="{{icon}}"
-           @click="handleImageClick"></image>
+    <image id="icon" src="{{icon}}" @click="handleImageClick"></image>
     <!-- 应用名 -->
-    <text id="name">{{name}}</text>
+    <text id="name">{{ name }}</text>
     <!-- 应用标签 -->
     <div id="tags">
       <text class="tag">无安装</text>
@@ -15,24 +13,31 @@
       <text class="tag">一步直达</text>
     </div>
     <!-- 应用描述 -->
-    <text id="desc">{{desc}}</text>
+    <text id="desc">{{ desc }}</text>
     <!-- 应用详情 -->
     <div class="detail detail-first">
       <text class="detail-title">服务类型</text>
-      <text class="detail-content">{{serviceType}}</text>
+      <text class="detail-content">{{ serviceType }}</text>
     </div>
     <div class="detail">
       <text class="detail-title">Github</text>
-      <text class="detail-content"
-            @click="gotoGithub">{{githubUrl}}</text>
+      <text class="detail-content" @click="gotoGithub">{{ githubUrl }}</text>
+    </div>
+    <div class="detail">
+      <text class="detail-title">隐私政策</text>
+      <text class="detail-content" @click="gotoLegalAgreement">{{
+        legalAgreementUrl
+      }}</text>
     </div>
     <!-- 创建快捷方式 -->
-    <input class="btn"
-           type="button"
-           onclick="createShortcut"
-           value="创建快捷方式"></input>
+    <input
+      class="btn"
+      type="button"
+      onclick="createShortcut"
+      value="创建快捷方式"
+    />
     <!-- 版权信息 -->
-    <text id="footer">{{copyright}}</text>
+    <text id="footer">{{ copyright }}</text>
   </div>
 </template>
 
@@ -55,7 +60,8 @@ export default {
     desc: '即点即用，让你省去下载安装的步骤，立即使用各类服务',
     serviceType: '个人博客',
     githubUrl: 'https://github.com/KaiOrange',
-    copyright: ''
+    copyright: '',
+    legalAgreementUrl: 'https://kai666666.com/legal-agreement/',
   },
   onInit() {
     // 设置标题栏
@@ -70,6 +76,14 @@ export default {
       uri: '/Webview',
       params: {
         url: this.githubUrl
+      }
+    })
+  },
+  gotoLegalAgreement() {
+    router.push({
+      uri: '/Webview',
+      params: {
+        url: this.legalAgreementUrl
       }
     })
   },
